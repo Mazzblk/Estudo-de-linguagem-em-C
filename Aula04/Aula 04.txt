@@ -1,0 +1,10 @@
+Nessa aula vimos um novo tipo de variavel, o float, que é uma varivel de numeros "quebrados". Para declarar basta fazer exatamente igual as variaveis inteiras, mas a marcação é 
+"float" ao em vez de "int". Pude perceber nessa aulda que, assim como no portugol, podemos declara mais de uma variavel de uma vez, basta separar o nome com uma vigula.
+Para guardar o valor digitado pelo usuario na memória usando um float, basta fazer de forma analoga ao inteiro, mas a marcação muda de "%d" para "%f".
+Aprendemos a fazer uma operação matematica. Para atribuir um valor a uma variavel usando uma operação matematica basta escrever o nome da variavel que o programa
+vai atribuir o valor, em seguida o sinal de igual (=) que serve para atribuir o que vem depois disso na operação. O exemplo do professor foi uma operação de média, então
+a soma fica dentro de parenteses e divisão por dois fica do lado de fora.
+Para printar a variavel float é de forma analoga as variaveis inteiras, mas usando a marcação "%f" no lugar que desejas que o programa escreva a varivavel.
+O professor aprovitou para ensinar uma marcação de formatação. entre o "%" e o "f" basta colocar um ponto "." e o tamanho das casas decimais que irá escrever em numeros inteiros.
+O professor mostrou a sintax do else que é quivalente ao "senao" do portugol, mas aqui no C ele fica no final do "if", para então abrir novas
+chaves e de forma identica se escreve o comando que deseja caso a condição lógica não for atendida.

@@ -1,0 +1,10 @@
+Nessa aula aprendemos principalmente sobre funções com parametro de retorno, ou seja, funções que retornam um resultado que pode ser integrado a uma variavel.
+No exemplo, crimaos uma calculadora que pode fazer opeções especificas que o usuario escolhe apartir de um menu.
+Para declarar uma função com parametro de retorno, a difereça é que ela precisa ficar acima do "main" e em vez de usar o "void" antes do nome da função, se usa o tipo
+que a função vai retorar, no exemplo da aula foi o "float". Dentro dos paranteses, indica o tipo e o nome da varivavel de entrada para então, dentro das chaves 
+esfcrever o código, que, no exemplo da aula, foram opeções matemtaticas silples, que ficam na linha do "return". Para fazer uma variavel receber essa função,
+basta escrever o nome da variavel e afrente dela o nome da função depois de um sinal de igual (=) e dentro dos parenteses o nome das variveis, que tem que ser do mesmo 
+tipo da que está dentro da função.
+Algumas soluções criativas que não estão no video, foi o uso da biblioteca <string.h> e <math.h>. O <string.h> foi para que uma variavel pudesse receber numa string o tipo de operação
+que havia escolhido no menu com o código "strcpy". A <math.h> foi para usar o fmod() no res para descobrir seu modulo e diferenciar resultados reais de inteiros e permetir uma melhor
+formatação na resposta, usando a estrutura condicional "if".

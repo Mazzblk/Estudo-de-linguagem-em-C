@@ -1,0 +1,7 @@
+Na aula aprendemos a declarar uma variavel, com foco no tipo string (caratere).
+Para declarar basta primeiramente dizer o Tipo, após isso o nome da variavel e por fim o limete de carteres.
+Apredemos o comando gets que é o "leia". Ele serve para receber na variavel o que o usuario digitar.
+Basta escrever o comando e colocar a variavel entre parentes.
+Para printar uma variavel precisamos usar a marcação % seguida do tipo da varivavel, no caso do caractere (ou string),
+a marcação escrepra o "s". em seguida, depois de fecar os parnteses dentro do printf, escrevemos o nome da variavel
+seguido de uma virgula. Após isso podemos fehar o parenteses do comando printf.

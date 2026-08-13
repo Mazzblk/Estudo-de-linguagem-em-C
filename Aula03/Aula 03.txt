@@ -1,0 +1,10 @@
+Nessa aula aprendemos principalmente sobre variaveis do tipo inteiro, como declarar, qual comando usar para armazenar um valor na memória e como printar.
+Também aprendendo o comando de controle "if" (se).
+
+Para declarar a variavel inteiro bastar ecrever "int", para dizer ao programa que é inteiro, e logo após o nome da variavel.
+Para guardar a o valor na mémoria basta usar o comando "scanf". A sintax dele precisa usar a marcação entre parenteses e entre aspas "%" e em seguida o "d" para dizer ao programa que
+o valor é do tipo inteiro. Após isso, usa a virgula para separar o tipo do no nome da varivavel, que deve conter a marcação "&". E assim fechasse o parenteses e a variavel recebe o 
+valor que o usuario digitou no terminal.
+
+O comando de controle é fundamentalmente identico ao "SE" do portugol. Sua sintax é simple, basta escrever o comando "if", em seguida entre parenteses a condição. No exemplo do professor,
+ele usou a marcação ">", "<" e "=", depois da varivel. Isso dirá ao programa se ele deve ou não executar o que estiver entre chaves "{}". 

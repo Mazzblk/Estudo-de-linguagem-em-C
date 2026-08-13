@@ -1,0 +1,33 @@
+Nessa aula aprendemos a estrutura de repetição "for" que é o equivalente ao "para" do portugol. A sintax é bem diferente, mas intuitiva. Primeiro declara
+o valor da variavel indice, após a declaração ser fechada com ";", declara o parametro que deve somar usando "<", ">" e "=" á um valor que pode ser uma variavel ou um numero, e porfim dizer 
+quantidade de passos. Tudo isso dentro de parenteses, e o código que deve ser executado no loop é escrito dentro de chave ({}).
+No exemplo da aula fizemos um algoritmo que desenha uma arvore de natal (Um triangulo) usando tres laços de repetição. Os laços internos controlham a quantidade de estrelas e espaços
+para desenhar com base no tamanho pedido pelo usuario, e o laço externo controla o tamanho.
+Eu crirei uma vesão em portugol para me basear:
+
+Algoritmo "arvore de natal"
+
+Var
+tam, I, esp, II: inteiro
+
+Inicio
+escreval("Feliz natal!")
+escreva ("Tamanho: ")
+leia(tam)
+esp <- tam
+escreval
+para I <- 1 ate tam*2 faca
+     se I % 2 = 1 entao
+        para II <- 1 ate esp faca
+          escreva(" ")
+        fimpara
+        para II <- 1 ate I faca
+             escreva ("*")
+        fimpara
+        escreval ()
+        esp <- esp - 1
+     fimse
+fimpara
+
+
+Fimalgoritmo

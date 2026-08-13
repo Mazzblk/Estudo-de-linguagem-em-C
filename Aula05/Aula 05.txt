@@ -1,0 +1,6 @@
+Nessa aula foi ensiando a estrutura "switch case", que é uma outra opção de estrutura de controle ideal para menus de opção.
+Ela funciona exatamente como o "escolha, caso" do portugol. Você declara qual variavel quer testar na na frente do "switch" entre parenteses.
+Entre as chaves colocasse as opção na frente do "case" e abaixo o código que irá executar caso a condição seja atendida.
+O mais difrente aqui é a marcação do "break"que, pelo que eu entedi, apenas indica onde o código dentro do case termina.
+O professor também ensinou que para desclarar uma variavel global, que vai funcionar dentro de qualquer função e não dentro da estrutura principal,
+bastar escrever ela fora do "int main (){}".

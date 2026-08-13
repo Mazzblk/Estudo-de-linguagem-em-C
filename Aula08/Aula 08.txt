@@ -1,0 +1,4 @@
+Nessa aula aprendemos a criar um gerador de numeros aleatórias baseado em tempo. 
+Usamos a função "srand" para criar uma seed, dentro de parenteses usamos o "time" que corre em segundos, o que significa que uma nova seed vai ser gerada por segundo.
+a função "rand" carrega essa seed que é um numero gigante spseudo aleatória, então usamos o módulo dessa seed por 6 (%6) o que vai sempre entregar um resultado de 0 a
+5. Para puxar esse numero num a string basta usar o marcador "%d", assim como usamos com variaveis inteiras.
