@@ -3,7 +3,7 @@
 int main(int argc, char const *argv[])
 {
     float md[5], nt[3], sm;
-    int i, j, qn;
+    int i, qn;
     char nm[5][50];
     qn = 0;
     do{ 
