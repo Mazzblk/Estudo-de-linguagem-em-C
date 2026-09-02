@@ -24,6 +24,7 @@ int compid(int *tam,struct produto *lista){
 
 struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
     int i, j;
+    *cont = *ind;
     do{
         for (i = *cont; i < *tam; i++){
 
@@ -96,12 +97,13 @@ void consulta(struct produto *lista, int ind){
             return;
         }
     }
-    printf("Produto não encontrado.");
+    printf("Produto nao encontrado.");
     system("pause");
 }
 
 void procad(struct produto *lista, int ind){
     int i;
+    system("cls");
     cab();
     printf("-Lista de produtos cadastrados-\n");
     printf("-------------------");
@@ -113,15 +115,71 @@ void procad(struct produto *lista, int ind){
     system("pause");
 }
 
+struct produto* excluir(struct produto *lista, int *ind, int *tam){
+    union resposta{int ID, cont; char SN[4];}resp;
+    int i;
+    system("cls");
+    cab();
+    printf("Digite o ID do produto: ");
+    scanf("%d", &resp.ID);
+    for (i = 0; i < *ind; i++){
+        if (resp.ID == lista[i].ID){
+            printf("-------------------");
+            printf("\nProduto: %s\nID: %d\nPreco: %.2f \n", lista[i].nome, lista[i].ID, lista[i].preco);
+            printf("-------------------\n");
+            goto excluir;
+        }
+    }
+    printf("ID nao encontrado.");
+    system("pause");
+    return lista;
+
+    excluir:
+    printf("!TEM CERTEZA QUE GOSTARIA DE EXCLUIR?\n Se quiser prosseguir com a exclusao digite 'SIM'\n Do contrario, digite 'NAO': ");
+    do{
+        scanf("%s", resp.SN);
+        if (strcmp(resp.SN, "SIM") == 0){
+            resp.cont = i;
+            for (i = resp.cont; i < *ind-1; i++){
+                lista[i] = lista[i+1];
+            }
+            *tam = *tam-1;
+            *ind = *ind-1;
+            struct produto *temp = realloc (lista, *tam*sizeof(*lista));
+            if (temp != NULL || *tam == 0){
+                lista = temp;
+                printf("Produto excluido.");
+                system("pause");
+                return lista;
+            }else{
+                printf("ERRO");
+                system("pause");
+                return lista;
+            }
+        }else if (strcmp(resp.SN, "NAO") == 0){
+            printf("OP Cancelado");
+            system("pause");
+            return lista;
+        }else{
+            printf("!RESPOSTA INVALIDA!\nDigite'SIM' ou 'NAO': ");
+        }
+    }while (1);
+}
+
+
 void menu(struct produto *lista, int *tam){
     int resp;
-    int ind, cont = 0;
+    int ind =0 , cont = 0;
+    if (tam == 0){tam = 2;}
+    
     do{
         system("CLS");
         cab();
         printf("[1] Cadastrar produtos\n");
         printf("[2] Consultar via nome\n");
         printf("[3] Lista de produtos\n");
+        printf("[4] Excluir produto\n");
+        printf("Digite qualquer outra coisa para sair\n");
         printf("-----------------------\n");
         printf("Digite o numero: ");
         scanf("%d", &resp);
@@ -136,7 +194,12 @@ void menu(struct produto *lista, int *tam){
         case 3:
             procad(lista, ind);
             break;
+        case 4:
+            lista = excluir(lista, &ind, tam);
+            break;
+
         default:
+            return;
             break;
         }
     } while (1);
