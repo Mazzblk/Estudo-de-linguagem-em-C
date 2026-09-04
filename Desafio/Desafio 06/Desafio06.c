@@ -5,7 +5,7 @@
 
 struct produto {
     char nome[20];
-    int ID;
+    int ID, entrada;
     float preco;
 };
 
@@ -22,12 +22,27 @@ int compid(int *tam,struct produto *lista){
     return ID;
 }
 
-struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
+void alf(struct produto *lista,  int *ind, int *np){
+    int i, j;
+    struct produto aux;
+   
+    for (i = 0; i < *ind - 1; i++){
+        for (j = 0; j < *ind - 1 - i; j++){
+            if (strcmp(lista[j].nome, lista[j+1].nome)==0){
+                aux = lista[j];
+                lista[j] = lista[j+1];
+                lista[j] = aux;
+            }
+        }
+    }       
+}
+
+struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind, int *np){
     int i, j;
     *cont = *ind;
     do{
         for (i = *cont; i < *tam; i++){
-
+            lista[i].entrada = i;
             system("CLS");
             cab();
             printf("Digite o nome do produto: ");
@@ -59,9 +74,11 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
             } while (j == 0);
             lista[i].ID = j;
             printf("\nProduto cadastrado, ID: %d: \n\n", lista[i].ID = j);
+            alf(lista, ind, np);
             *ind = *ind + 1;
             system("pause");
         }
+        
         *cont = *tam;
         *tam += 2;
         struct produto *temp = realloc (lista, *tam*sizeof(*lista));
@@ -72,6 +89,7 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
             return lista;
             system("pause");
         }
+        
         repete:
     } while (1);
     
@@ -108,7 +126,7 @@ void procad(struct produto *lista, int ind){
     printf("-Lista de produtos cadastrados-\n");
     printf("-------------------");
     for (i = 0; i < ind; i++){
-        printf("\nProduto: %s\nID: %d\nPreco: %.2f \n", lista[i].nome, lista[i].ID, lista[i].preco);
+        printf("\nEstrada: %d\nProduto: %s\nID: %d\nPreco: %.2f \n",lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco);
         printf("-------------------");
     }
     printf("\n");
@@ -169,10 +187,10 @@ struct produto* excluir(struct produto *lista, int *ind, int *tam){
 
 void menu(struct produto *lista, int *tam){
     int resp;
-    int ind =0 , cont = 0;
-    if (tam == 0){tam = 2;}
+    int ind =0 , cont = 0, np = 0;
     
     do{
+        if (*tam == 0 || *tam == 1){*tam = 2;}
         system("CLS");
         cab();
         printf("[1] Cadastrar produtos\n");
@@ -186,7 +204,7 @@ void menu(struct produto *lista, int *tam){
         switch (resp)
         {
         case 1:
-            lista = cadastro(lista, tam, &cont, &ind);
+            lista = cadastro(lista, tam, &cont, &ind, &np);
             break;
         case 2:
             consulta(lista, ind);
@@ -197,7 +215,6 @@ void menu(struct produto *lista, int *tam){
         case 4:
             lista = excluir(lista, &ind, tam);
             break;
-
         default:
             return;
             break;
