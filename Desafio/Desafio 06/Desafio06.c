@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 struct produto {
-    char nome[20];
+    char nome[20], metrica[3];
     int ID, entrada;
     float preco;
 };
@@ -42,13 +43,19 @@ int compid(int *tam,struct produto *lista){
 void alf(struct produto *lista,  int *ind){
     int i, j;
     struct produto aux;
-   
+    for (i = 0; i < *ind; i++){
+        for (j = 0; j < strlen(lista[i].nome); j++)
+        {
+            lista[i].nome[j] = toupper(lista[i].nome[j]);
+        }
+    }
+
     for (i = 0; i < *ind - 1; i++){
         for (j = 0; j < *ind - 1 - i; j++){
-            if (strcmp(lista[j].nome, lista[j+1].nome)==0){
+            if (strcmp(lista[j].nome, lista[j+1].nome) > 0){
                 aux = lista[j];
                 lista[j] = lista[j+1];
-                lista[j] = aux;
+                lista[j+1] = aux;
             }
         }
     }       
@@ -59,11 +66,10 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
     *cont = *ind;
     do{
         for (i = *cont; i < *tam; i++){
-            lista[i].entrada = i+1;
             system("CLS");
             cab();
             printf("Digite o nome do produto: ");
-            scanf("%s", lista[i].nome);
+            scanf(" %[^\n]", lista[i].nome);
             for (j = 0; j < *ind; j++){
                 if (strcmp(lista[i].nome, lista[j].nome) == 0){
                     printf("Produto ja cadastrado.\n");
@@ -78,10 +84,10 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
             }
             if (strcmp(lista[i].nome, "menu") == 0){
                 return lista;
+                alf(lista, ind);
             }
             printf("\nDigite o preco do produto: ");
-            scanf("%f", &lista[i].preco);
-            if (scanf("%d", &lista[i]) != 1){
+            if (scanf("%f", &lista[i].preco) != 1){
             while (getchar() != '\n');
             printf("Preco invalido.\n\n");
             system("pause");
@@ -92,14 +98,33 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
                 system("pause");
                 goto last;
             }
-            
+
+            do{
+                printf("\nMetrica de preco:\n");
+                printf("[1] UN\n");
+                printf("[2] KG\n");
+                printf("Digite: ");
+                scanf("%d", &j);
+                if (j == 1 || j == 2){
+                    if (j == 1){
+                        strcpy(lista[i].metrica, "UN");
+                    }else{
+                        strcpy(lista[i].metrica, "KG");}
+                    printf("Atribuido.\n");
+                    break;
+                }else{
+                    system("cls");
+                    cab();
+                    printf("Resposta invalida.\n");}
+            } while (1);
+                
             do{   
                 j = 0;
                 j = compid(tam, lista);
             } while (j == 0);
             lista[i].ID = j;
             printf("\nProduto cadastrado, ID: %d: \n\n", lista[i].ID = j);
-            alf(lista, ind);
+            lista[i].entrada = i+1;
             *ind = *ind + 1;
             system("pause");
             
@@ -123,7 +148,7 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
                 system("pause");
             }
         }
-        
+        alf(lista, ind);
         last:
     } while (j == 1);
     return lista;
@@ -143,7 +168,7 @@ void consultanm(struct produto *lista, int ind){
     for (i = 0; i < ind; i++){
         if (strcmp(lista[i].nome, resp) == 0){
             printf("------------------- ");
-            printf("\nEntrada: %d\nProduto: %s\nID: %d\nPreco: %.2f \n", lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco);
+            printf("\nEntrada: %d\nProduto: %s\nID: %d\nPreco: %.2f %s \n", lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco, lista[i].metrica);
             printf("------------------- \n");
             system("pause");
             goto last;
@@ -154,6 +179,7 @@ void consultanm(struct produto *lista, int ind){
     last:
     return;
 }
+
 void consultaid(struct produto *lista, int ind){
     int i, resp;
     system("CLS");
@@ -171,7 +197,7 @@ void consultaid(struct produto *lista, int ind){
     for (i = 0; i < ind; i++){
         if (lista[i].ID == resp){
             printf("------------------- ");
-            printf("\nEntrada: %d\nProduto: %s\nID: %d\nPreco: %.2f \n", lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco);
+            printf("\nEntrada: %d\nProduto: %s\nID: %d\nPreco: %.2f %s \n", lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco, lista[i].metrica);
             printf("------------------- \n");
             system("pause");
             goto last;
@@ -182,6 +208,7 @@ void consultaid(struct produto *lista, int ind){
     last:
     return;
 }
+
 void consulta(struct produto *lista, int ind){
     int i;
     do
@@ -223,7 +250,7 @@ void procad(struct produto *lista, int ind){
     printf("-Lista de produtos cadastrados-\n");
     printf("-------------------");
     for (i = 0; i < ind; i++){
-        printf("\nEstrada: %d\nProduto: %s\nID: %d\nPreco: %.2f \n",lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco);
+        printf("\nEntrada: %d\nProduto: %s\nID: %d\nPreco: %.2f %s \n", lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco, lista[i].metrica);
         printf("-------------------");
     }
     printf("\n");
@@ -233,54 +260,136 @@ void procad(struct produto *lista, int ind){
 struct produto* excluir(struct produto *lista, int *ind, int *tam){
     union resposta{int ID, cont; char SN[4];}resp;
     int i;
-    system("cls");
-    cab();
-    printf("Digite o ID do produto: ");
-    scanf("%d", &resp.ID);
-    
-    for (i = 0; i < *ind; i++){
-        if (resp.ID == lista[i].ID){
-            printf("-------------------");
-            printf("\nProduto: %s\nID: %d\nPreco: %.2f \n", lista[i].nome, lista[i].ID, lista[i].preco);
-            printf("-------------------\n");
-            goto excluir;
-        }
-    }
-    printf("ID nao encontrado.");
-    system("pause");
-    while (getchar() != '\n');
-    return lista;
-
-    excluir:
-    printf("!TEM CERTEZA QUE GOSTARIA DE EXCLUIR?\n Se quiser prosseguir com a exclusao digite 'SIM'\nDo contrario, digite 'NAO': ");
     do{
-        scanf("%s", resp.SN);
-        if (strcmp(resp.SN, "SIM") == 0){
-            resp.cont = i;
-            for (i = resp.cont; i < *ind-1; i++){
-                lista[i] = lista[i+1];
+        system("cls");
+        cab();
+        printf("Digite o ID do produto: ");
+        scanf("%d", &resp.ID);
+        
+        for (i = 0; i < *ind; i++){
+            if (resp.ID == lista[i].ID){
+                printf("-------------------");
+                printf("\nEntrada: %d\nProduto: %s\nID: %d\nPreco: %.2f %s \n", lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco, lista[i].metrica);
+                printf("-------------------\n");
+                goto excluir;
             }
-            *tam = *tam-1;
-            *ind = *ind-1;
-            struct produto *temp = realloc (lista, *tam*sizeof(*lista));
-            if (temp != NULL || *tam == 0){
-                lista = temp;
-                printf("Produto excluido.");
+        }
+        printf("ID nao encontrado.");
+        system("pause");
+        while (getchar() != '\n');
+        return lista;
+
+        excluir:
+        printf("!TEM CERTEZA QUE GOSTARIA DE EXCLUIR?\nSe quiser prosseguir com a exclusao digite 'SIM'\nDo contrario, digite 'NAO': ");
+        do{
+            scanf("%s", resp.SN);
+            if (strcmp(resp.SN, "SIM") == 0){
+                resp.cont = i;
+                for (i = resp.cont; i < *ind-1; i++){
+                    lista[i] = lista[i+1];
+                }
+                *tam = *tam-1;
+                *ind = *ind-1;
+                struct produto *temp = realloc (lista, *tam*sizeof(*lista));
+                if (temp != NULL || *tam == 0){
+                    lista = temp;
+                    system("cls");
+                    cab();
+                    printf("Produto excluido.");
+                    system("pause");
+                    return lista;
+                }else{
+                    printf("ERRO");
+                    system("pause");
+                    return lista;
+                }
+            }else if (strcmp(resp.SN, "NAO") == 0){
+                system("cls");
+                cab();
+                printf("OP Cancelado\n");
                 system("pause");
                 return lista;
             }else{
-                printf("ERRO");
+                system("cls");
+                cab();
+                printf("!RESPOSTA INVALIDA!\nDigite'SIM' ou 'NAO': ");
                 system("pause");
-                return lista;
             }
-        }else if (strcmp(resp.SN, "NAO") == 0){
-            printf("OP Cancelado\n");
-            system("pause");
-            return lista;
-        }else{
-            printf("!RESPOSTA INVALIDA!\nDigite'SIM' ou 'NAO': ");
+        }while (1);
+        i = continuarsn();
+    } while (i == 1);
+}
+
+struct produto* trocp(struct produto *lista, int *ind){
+    union resposta{int ID, j, cont; char SN[4];}resp;
+    struct produto aux;
+    int i;
+    do{
+        system("cls");
+        cab();
+        printf("Digite o ID do produto: ");
+        scanf("%d", &resp.ID);
+        
+        for (i = 0; i < *ind; i++){
+            if (resp.ID == lista[i].ID){
+                printf("-------------------");
+                printf("\nEntrada: %d\nProduto: %s\nID: %d\nPreco: %.2f %s \n", lista[i].entrada, lista[i].nome, lista[i].ID, lista[i].preco, lista[i].metrica);
+                printf("-------------------\n");
+                aux = lista[i];
+                goto trocar;
+            }
         }
-    }while (1);
+        printf("ID nao encontrado.");
+        system("pause");
+        while (getchar() != '\n');
+        return lista;
+
+        trocar:
+        printf("Digite o novo preco: ");
+        scanf("%f", &lista[i].preco);
+        do{
+            printf("\nMetrica de preco:\n");
+            printf("[1] UN\n");
+            printf("[2] KG\n");
+            printf("Digite: ");
+            scanf("%d", &resp.j);
+            if (resp.j == 1 || resp.j == 2){
+                if (resp.j == 1){
+                    strcpy(lista[i].metrica, "UN");
+                }else{
+                    strcpy(lista[i].metrica, "KG");}
+                printf("Atribuido.\n");
+                break;
+            }else{
+                system("cls");
+                cab();
+                printf("Resposta invalida.\n");}
+        } while (1);
+        printf("!TEM CERTEZA QUE GOSTARIA DE MUDAR O PRECO?\nSe quiser prosseguir com a troca digite 'SIM'\nDo contrario, digite 'NAO': ");
+        do{
+            scanf("%s", resp.SN);
+            if (strcmp(resp.SN, "SIM") == 0){
+                system("cls");
+                cab();
+                printf("Novo preco atribuido\n");
+                system("pause");    
+                break;
+            }else if (strcmp(resp.SN, "NAO") == 0){
+                system("cls");
+                cab();
+                printf("OP Cancelado\n");
+                system("pause");
+                lista[i] = aux;
+                break;
+            }else{
+                system("cls");
+                cab();
+                printf("!RESPOSTA INVALIDA!\nDigite'SIM' ou 'NAO': ");}
+                system("pause");
+        }while (1);
+        i = continuarsn();
+    } while (i == 1);
+    return lista;
 }
 
 void menu(struct produto *lista, int *tam){
@@ -295,12 +404,12 @@ void menu(struct produto *lista, int *tam){
         printf("[2] Consultar produto\n");
         printf("[3] Lista de produtos\n");
         printf("[4] Excluir produto\n");
-        printf("Digite qualquer outro numero para sair\n");
+        printf("[5] Trocar preco\n");
+        printf("Digite qualquer outro numero para sair\n\n");
         printf("-----------------------\n");
         printf("Digite o numero: ");
         scanf("%d", &resp);
-        switch (resp)
-        {
+        switch (resp){
         case 1:
             lista = cadastro(lista, tam, &cont, &ind);
             break;
@@ -312,6 +421,9 @@ void menu(struct produto *lista, int *tam){
             break;
         case 4:
             lista = excluir(lista, &ind, tam);
+            break;
+        case 5:
+            lista = trocp(lista, &ind);
             break;
         default:
             return;
