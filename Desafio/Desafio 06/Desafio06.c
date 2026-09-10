@@ -11,6 +11,7 @@ struct produto {
 };
 
 void cab(void);
+void esp(FILE *n);
 
 int continuarsn(){
     int r;
@@ -32,12 +33,60 @@ int continuarsn(){
 int compid(int *tam,struct produto *lista){
     int i, ID = rand()% 99999;
     for (i = 0; i < *tam; i++){
-        if (lista[i].ID == ID)
-        {
+        if (lista[i].ID == ID){
             return 0;
         }
     }
     return ID;
+}
+
+void escrita(struct produto *lista, int i){
+    int j;
+    union inf {char num[20], C[8];} p;
+    FILE *n;
+    n = fopen("n.txt","a");
+    if (n == NULL){
+        printf("Erro, arquivo não encontrado, procurando backup.\n");
+        int fclose (FILE *n);
+        n = fopen("nb.txt","a");
+            if (n == NULL){
+            printf("Erro, arquivo não encontrado\nCriação de arquivo impossivel, libere espaco no armazenamento.");
+            exit(2);
+        }
+    }
+    snprintf(p.num, sizeof(p.num), "%d", lista[i].entrada);
+    for (j = 0; j < strlen(p.num); j++){
+    fputc(p.num[j], n);
+    }
+    fputc('.', n);
+    esp(n);
+    for (j = 0; j < strlen(lista[i].nome); j++){
+        fputc(lista[i].nome[j], n);
+    }
+    esp(n);
+    strcpy(p.C, "preco: ");
+    for (j = 0; j < strlen(p.C); j++){
+    fputc(p.C[j], n);
+    }
+    snprintf(p.num, sizeof(p.num), "%.2f", lista[i].preco);
+    for (j = 0; j < strlen(p.num); j++){
+    fputc(p.num[j], n);
+    }
+    esp(n);
+    for (j = 0; j < strlen(lista[i].metrica); j++){
+    fputc(lista[i].metrica[j], n);
+    }
+    esp(n);
+    strcpy(p.C, "ID: ");
+    for (j = 0; j < strlen(p.C); j++){
+    fputc(p.C[j], n);
+    }
+    snprintf(p.num, sizeof(p.num), "%d", lista[i].ID);
+    for (j = 0; j < strlen(p.num); j++){
+    fputc(p.num[j], n);
+    }
+    esp(n);
+    fclose(n);
 }
 
 void alf(struct produto *lista,  int *ind){
@@ -86,6 +135,7 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
                 return lista;
                 alf(lista, ind);
             }
+            
             printf("\nDigite o preco do produto: ");
             if (scanf("%f", &lista[i].preco) != 1){
             while (getchar() != '\n');
@@ -125,6 +175,7 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
             lista[i].ID = j;
             printf("\nProduto cadastrado, ID: %d: \n\n", lista[i].ID = j);
             lista[i].entrada = i+1;
+            escrita(lista, i);
             *ind = *ind + 1;
             system("pause");
             
@@ -426,6 +477,7 @@ void menu(struct produto *lista, int *tam){
             lista = trocp(lista, &ind);
             break;
         default:
+            free(lista);
             return;
             break;
         }
@@ -439,7 +491,8 @@ int main(int argc, char const *argv[])
     struct produto *lista = malloc(tam*sizeof(*lista));
 
     menu(lista, &tam);
-    
+    system("cls");
+    printf("programa encerrado.");
     free(lista);
     return 0;
 }
@@ -448,4 +501,8 @@ void cab(void){
     printf("_____________________________\n");
     printf("      Sistema de produtos\n");
     printf("-----------------------------\n\n");
+}
+
+void esp(FILE *n){
+    fputc(' ', n);
 }
