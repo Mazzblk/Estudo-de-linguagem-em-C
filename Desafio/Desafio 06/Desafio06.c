@@ -12,6 +12,109 @@ struct produto {
 
 void cab(void);
 void esp(FILE *n);
+void alf(struct produto *lista,  int *ind){
+    int i, j;
+    struct produto aux;
+    for (i = 0; i < *ind; i++){
+        for (j = 0; j < strlen(lista[i].nome); j++)
+        {
+            lista[i].nome[j] = toupper(lista[i].nome[j]);
+        }
+    }
+
+    for (i = 0; i < *ind - 1; i++){
+        for (j = 0; j < *ind - 1 - i; j++){
+            if (strcmp(lista[j].nome, lista[j+1].nome) > 0){
+                aux = lista[j];
+                lista[j] = lista[j+1];
+                lista[j+1] = aux;
+            }
+        }
+    }       
+}
+
+struct produto* inc(struct produto *lista, int *ind, int *tam){
+    int c, i, j = 0;
+    char numc[20];
+    FILE *n;
+    n = fopen("n.txt","r");
+    if (n == NULL){exit(2);} 
+    c = fgetc(n);
+    if (c == EOF) {
+        fclose(n);
+        return lista;
+    }
+    ungetc(c, n);
+    do{
+        j = 0;
+        for (i = 0; i < *tam; i++){
+            while ((c = fgetc(n)) != '|' && c != EOF){
+                numc[j] = (char)c;
+                j++;
+            }
+            numc[j] = '\0';
+            lista[*ind].entrada = atoi(numc);
+            j = 0;
+            while ((c = fgetc(n)) != '|' && c != EOF){
+                lista[*ind].nome[j] = (char)c;
+                j++;
+            }
+            lista[*ind].nome[j] = '\0';
+            j = 0;
+            while ((c = fgetc(n)) != '|' && c != EOF){
+                numc[j] = (char)c;
+                j++;
+            }
+            numc[j] = '\0';
+            lista[*ind].preco = atof(numc);
+            j = 0;
+            while ((c = fgetc(n)) != '|' && c != EOF){
+                lista[*ind].metrica[j] = (char)c;
+                j++;
+            }
+            lista[*ind].metrica[j] = '\0';
+            j = 0;
+            while ((c = fgetc(n)) != '|' && c != EOF){
+                numc[j] = (char)c;
+                j++;
+            }
+            numc[j] = '\0';
+            lista[*ind].ID = atoi(numc);
+            j = 0;
+            if (c == EOF){
+                fclose(n);
+                j = 0;
+                if (*ind >= *tam){
+                    *tam += 2;
+                    struct produto *temp = realloc (lista, *tam*sizeof(*lista));
+                    if (temp != NULL){
+                        lista = temp;
+                    } else {
+                        printf("ERRO");
+                        return lista;
+                        fclose(n);
+                        system("pause");
+                    }
+                }
+                return lista;
+            }
+            *ind = *ind + 1;
+        }
+        if (*ind >= *tam){
+            *tam += 2;
+            struct produto *temp = realloc (lista, *tam*sizeof(*lista));
+            if (temp != NULL){
+                lista = temp;
+            } else {
+                printf("ERRO");
+                return lista;
+                fclose(n);
+                system("pause");
+            }
+        }
+        
+    }while (1);
+}
 
 int continuarsn(){
     int r;
@@ -46,28 +149,17 @@ void escrita(struct produto *lista, int i){
     FILE *n;
     n = fopen("n.txt","a");
     if (n == NULL){
-        printf("Erro, arquivo não encontrado, procurando backup.\n");
-        int fclose (FILE *n);
-        n = fopen("nb.txt","a");
-            if (n == NULL){
-            printf("Erro, arquivo não encontrado\nCriação de arquivo impossivel, libere espaco no armazenamento.");
             exit(2);
-        }
     }
     snprintf(p.num, sizeof(p.num), "%d", lista[i].entrada);
     for (j = 0; j < strlen(p.num); j++){
-    fputc(p.num[j], n);
+        fputc(p.num[j], n);
     }
-    fputc('.', n);
     esp(n);
     for (j = 0; j < strlen(lista[i].nome); j++){
         fputc(lista[i].nome[j], n);
     }
     esp(n);
-    strcpy(p.C, "preco: ");
-    for (j = 0; j < strlen(p.C); j++){
-    fputc(p.C[j], n);
-    }
     snprintf(p.num, sizeof(p.num), "%.2f", lista[i].preco);
     for (j = 0; j < strlen(p.num); j++){
     fputc(p.num[j], n);
@@ -77,10 +169,6 @@ void escrita(struct produto *lista, int i){
     fputc(lista[i].metrica[j], n);
     }
     esp(n);
-    strcpy(p.C, "ID: ");
-    for (j = 0; j < strlen(p.C); j++){
-    fputc(p.C[j], n);
-    }
     snprintf(p.num, sizeof(p.num), "%d", lista[i].ID);
     for (j = 0; j < strlen(p.num); j++){
     fputc(p.num[j], n);
@@ -89,26 +177,7 @@ void escrita(struct produto *lista, int i){
     fclose(n);
 }
 
-void alf(struct produto *lista,  int *ind){
-    int i, j;
-    struct produto aux;
-    for (i = 0; i < *ind; i++){
-        for (j = 0; j < strlen(lista[i].nome); j++)
-        {
-            lista[i].nome[j] = toupper(lista[i].nome[j]);
-        }
-    }
 
-    for (i = 0; i < *ind - 1; i++){
-        for (j = 0; j < *ind - 1 - i; j++){
-            if (strcmp(lista[j].nome, lista[j+1].nome) > 0){
-                aux = lista[j];
-                lista[j] = lista[j+1];
-                lista[j+1] = aux;
-            }
-        }
-    }       
-}
 
 struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
     int i, j;
@@ -174,7 +243,7 @@ struct produto* cadastro(struct produto *lista, int *tam, int *cont, int *ind){
             } while (j == 0);
             lista[i].ID = j;
             printf("\nProduto cadastrado, ID: %d: \n\n", lista[i].ID = j);
-            lista[i].entrada = i+1;
+            lista[i].entrada = *ind+1;
             escrita(lista, i);
             *ind = *ind + 1;
             system("pause");
@@ -445,8 +514,10 @@ struct produto* trocp(struct produto *lista, int *ind){
 
 void menu(struct produto *lista, int *tam){
     int resp;
-    int ind =0 , cont = 0;
+    int ind = 0 , cont = 0;
     
+    lista = inc(lista, &ind, tam);
+
     do{
         if (*tam == 0 || *tam == 1){*tam = 2;}
         system("CLS");
@@ -504,5 +575,5 @@ void cab(void){
 }
 
 void esp(FILE *n){
-    fputc(' ', n);
+    fputc('|', n);
 }

@@ -194,7 +194,7 @@ void menu(void){
             pesquisa();
             break;
         case 4:
-            alteraçao();
+            alteracao();
             break;
         case 5:
             desligamento();
