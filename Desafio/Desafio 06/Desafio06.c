@@ -5,13 +5,50 @@
 #include <ctype.h>
 
 struct produto {
-    char nome[20], metrica[3];
+    char nome[30], metrica[3];
     int ID, entrada;
     float preco;
 };
 
 void cab(void);
 void esp(FILE *n);
+
+void rescreve(struct produto *lista, int *ind){
+    FILE *n;
+    union inf {char num[20], C[8];} p;
+    int c, j, i;
+    n = fopen("n.txt","w");
+    if (n == NULL){exit(2);} 
+
+    for (i = 0; i < *ind; i++){
+        snprintf(p.num, sizeof(p.num), "%d", lista[i].entrada);
+        for (j = 0; j < strlen(p.num); j++){
+            fputc(p.num[j], n);
+        }
+        esp(n);
+        for (j = 0; j < strlen(lista[i].nome); j++){
+            fputc(lista[i].nome[j], n);
+        }
+        esp(n);
+        snprintf(p.num, sizeof(p.num), "%.2f", lista[i].preco);
+        for (j = 0; j < strlen(p.num); j++){
+            fputc(p.num[j], n);
+        }
+        esp(n);
+        for (j = 0; j < strlen(lista[i].metrica); j++){
+            fputc(lista[i].metrica[j], n);
+        }
+        esp(n);
+        snprintf(p.num, sizeof(p.num), "%d", lista[i].ID);
+        for (j = 0; j < strlen(p.num); j++){
+            fputc(p.num[j], n);
+        }
+        esp(n);
+    }
+    fclose(n);
+    return;
+}
+
 void alf(struct produto *lista,  int *ind){
     int i, j;
     struct produto aux;
@@ -34,86 +71,68 @@ void alf(struct produto *lista,  int *ind){
 }
 
 struct produto* inc(struct produto *lista, int *ind, int *tam){
-    int c, i, j = 0;
+    int c, j = 0;
     char numc[20];
-    FILE *n;
-    n = fopen("n.txt","r");
-    if (n == NULL){exit(2);} 
+    FILE *n = fopen("n.txt", "r");
+    if (n == NULL) { exit(2); } 
+
     c = fgetc(n);
     if (c == EOF) {
         fclose(n);
         return lista;
     }
     ungetc(c, n);
-    do{
-        j = 0;
-        for (i = 0; i < *tam; i++){
-            while ((c = fgetc(n)) != '|' && c != EOF){
-                numc[j] = (char)c;
-                j++;
-            }
-            numc[j] = '\0';
-            lista[*ind].entrada = atoi(numc);
-            j = 0;
-            while ((c = fgetc(n)) != '|' && c != EOF){
-                lista[*ind].nome[j] = (char)c;
-                j++;
-            }
-            lista[*ind].nome[j] = '\0';
-            j = 0;
-            while ((c = fgetc(n)) != '|' && c != EOF){
-                numc[j] = (char)c;
-                j++;
-            }
-            numc[j] = '\0';
-            lista[*ind].preco = atof(numc);
-            j = 0;
-            while ((c = fgetc(n)) != '|' && c != EOF){
-                lista[*ind].metrica[j] = (char)c;
-                j++;
-            }
-            lista[*ind].metrica[j] = '\0';
-            j = 0;
-            while ((c = fgetc(n)) != '|' && c != EOF){
-                numc[j] = (char)c;
-                j++;
-            }
-            numc[j] = '\0';
-            lista[*ind].ID = atoi(numc);
-            j = 0;
-            if (c == EOF){
-                fclose(n);
-                j = 0;
-                if (*ind >= *tam){
-                    *tam += 2;
-                    struct produto *temp = realloc (lista, *tam*sizeof(*lista));
-                    if (temp != NULL){
-                        lista = temp;
-                    } else {
-                        printf("ERRO");
-                        return lista;
-                        fclose(n);
-                        system("pause");
-                    }
-                }
-                return lista;
-            }
-            *ind = *ind + 1;
-        }
-        if (*ind >= *tam){
-            *tam += 2;
-            struct produto *temp = realloc (lista, *tam*sizeof(*lista));
-            if (temp != NULL){
+
+    while (1) {
+        if (*ind >= *tam) {
+            *tam += 5;
+            struct produto *temp = realloc(lista, (*tam) * sizeof(*lista));
+            if (temp != NULL) {
                 lista = temp;
             } else {
                 printf("ERRO");
-                return lista;
                 fclose(n);
-                system("pause");
+                return lista;
             }
         }
-        
-    }while (1);
+        j = 0;
+        while ((c = fgetc(n)) != '|' && c != EOF) {
+            numc[j++] = (char)c;
+        }
+        numc[j] = '\0';
+        if (c == EOF && j == 0) break;
+        lista[*ind].entrada = atoi(numc);
+        j = 0;
+        while ((c = fgetc(n)) != '|' && c != EOF) {
+            lista[*ind].nome[j++] = (char)c;
+        }
+        lista[*ind].nome[j] = '\0';
+        j = 0;
+        while ((c = fgetc(n)) != '|' && c != EOF) {
+            numc[j++] = (char)c;
+        }
+        numc[j] = '\0';
+        lista[*ind].preco = atof(numc);
+        j = 0;
+        while ((c = fgetc(n)) != '|' && c != EOF) {
+            lista[*ind].metrica[j++] = (char)c;
+        }
+        lista[*ind].metrica[j] = '\0';
+        j = 0;
+        while ((c = fgetc(n)) != '|' && c != EOF) {
+            numc[j++] = (char)c;
+        }
+        numc[j] = '\0';
+        lista[*ind].ID = atoi(numc);
+        *ind = *ind + 1;
+
+        if (c == EOF) {
+            break;
+        }
+    }
+
+    fclose(n);
+    return lista;
 }
 
 int continuarsn(){
@@ -415,7 +434,7 @@ struct produto* excluir(struct produto *lista, int *ind, int *tam){
                     lista = temp;
                     system("cls");
                     cab();
-                    printf("Produto excluido.");
+                    printf("Produto excluido.\n");
                     system("pause");
                     return lista;
                 }else{
@@ -517,6 +536,7 @@ void menu(struct produto *lista, int *tam){
     int ind = 0 , cont = 0;
     
     lista = inc(lista, &ind, tam);
+    alf(lista, &ind);
 
     do{
         if (*tam == 0 || *tam == 1){*tam = 2;}
@@ -543,9 +563,11 @@ void menu(struct produto *lista, int *tam){
             break;
         case 4:
             lista = excluir(lista, &ind, tam);
+            rescreve(lista, &ind);
             break;
         case 5:
             lista = trocp(lista, &ind);
+            rescreve(lista, &ind);
             break;
         default:
             free(lista);
@@ -564,6 +586,7 @@ int main(int argc, char const *argv[])
     menu(lista, &tam);
     system("cls");
     printf("programa encerrado.");
+    system("pause");
     free(lista);
     return 0;
 }
